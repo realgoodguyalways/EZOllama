@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-
+        <link rel="stylesheet" href="EZOllama.css">
     </head>
     <body>
+        <input type="text" id="prompt" placeholder="Type something...">
+        <button id="submit">Send</button>
+        <p id="reponse">Answer will appear here</p>
 
+        <script>
+            document.getElementById('submit').addEventListener('click', function() {
+                document.getElementById('reponse').innerText = "Loading...";
+
+                fetch('http://127.0.0.1:11434/api/generate', {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        model: 'tinyllama:latest',
+                        prompt: document.getElementById('prompt').value,
+                        stream: false
+                    })
+                })
+                .then(function(res) {return res.json(); })
+                .then(function(data) {
+                    document.getElementById('reponse').innerText = data.response;
+                })
+            })
+        </script>
     </body>
 </html>

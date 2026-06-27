@@ -19,11 +19,16 @@
                 flex: 1;
                 display: flex;
             }
+            .chat {
+                flex: 1;
+                overflow-y: auto;
+                padding: 30px;
+            }
         </style>
     </head>
     <body>
         <div class="chat">
-            <p id="response" style="word-break: keep-all; margin-left: 0%;">Answer will appear here</p>
+            <div id="response" style="word-break: keep-all; margin-left: 0%;">Answer will appear here</div>
         </div>
         <div class="input">
             <input type="text" id="prompt" placeholder="Type something..." 
@@ -48,8 +53,8 @@
                     body: JSON.stringify({ 
                         model: 'tinyllama:latest',
                         messages: prompts,
-                        stream: false
-                    })
+                        stream: false,
+                    }),
                 })
                 .then(function(res) {return res.json(); })
                 .then(function(data) {
@@ -60,6 +65,7 @@
                     var html = '';
                     for (var i =0; i < prompts.length; i++) {
                         var who = prompts[i].role === 'user' ? 'You' : 'AI';
+                        html += "<p><b>" + who + ": </b> " + prompts[i].content + "</p>";
                     }
                     document.getElementById('response').innerHTML = html;
                 }

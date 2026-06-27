@@ -19,9 +19,6 @@
                 flex: 1;
                 display: flex;
             }
-            .chat {
-                padding: 195px;
-            }
         </style>
     </head>
     <body>
@@ -35,22 +32,37 @@
         </div>
 
         <script>
-            document.getElementById('submit').addEventListener('click', function() {
-                document.getElementById('response').innerText = "Loading...";
-                document.getElementById('prompt').value = '';
+            var prompts = [];
 
-                fetch('http://127.0.0.1:11434/api/generate', {
+            document.getElementById('submit').addEventListener('click', function() {
+                var question = document.getElementById('prompt').value;
+                if (!question) {
+                    return;
+                }
+                prompts.push({ role: 'user', content: question });
+                document.getElementById('prompt').value = '';
+                display();
+
+                fetch('http://127.0.0.1:11434/api/chat', {
                     method: 'POST',
                     body: JSON.stringify({ 
                         model: 'tinyllama:latest',
-                        prompt: document.getElementById('prompt').value,
+                        messages: prompts,
                         stream: false
                     })
                 })
                 .then(function(res) {return res.json(); })
                 .then(function(data) {
-                    document.getElementById('reponse').innerText = data.response;
+                    prompts.push({ role: 'assistant', content: data.message.content });
+                    display();
                 })
+                function display() {
+                    var html = '';
+                    for (var i =0; i < prompts.length; i++) {
+                        var who = prompts[i].role === 'user' ? 'You' : 'AI';
+                    }
+                    document.getElementById('response').innerHTML = html;
+                }
             })
         </script>
     </body>

@@ -30,6 +30,7 @@
     <body>
         <div class="chat" id="chat">
             <div id="response" style=" max-width: 100%; word-wrap: break-word; word-break: keep-all; margin-left: 0%; display: inline-block; padding-left: 10px; padding-right: 10px; border-radius: 15px;">Answer will appear here</div>
+            <div id="loading" style=" opacity: 0; margin: 30px; margin-left: 10px;">Loading...</div>
         </div>
         <div class="input">
             <input type="text" id="prompt" placeholder="Type something..." 
@@ -45,6 +46,9 @@
                 if (!question) {
                     return;
                 }
+
+                document.getElementById('submit').disabled = true;
+
                 prompts.push({ role: 'user', content: question });
                 document.getElementById('prompt').value = '';
                 display();
@@ -61,14 +65,19 @@
                 .then(function(data) {
                     prompts.push({ role: 'assistant', content: data.message.content });
                     display();
+                    document.getElementById('submit').disabled = false;
                 })
                 function display() {
                     var html = '';
                     for (var i =0; i < prompts.length; i++) {
                         var who = prompts[i].role === 'user' ? 'You' : 'AI';
-                    }
-                    if (who === 'You') {
-                        document.getElementById('response').style.backgroundColor = '#5b5375';
+                        if (who === 'You') {
+                            document.getElementById('response').style.backgroundColor = '#5b5375';
+                            document.getElementById('loading').style.opacity = 1;
+                        } else {
+                            document.getElementById('loading').style.opacity = 0;
+                        }
+                        html += '<p><b>' + who + ':</b> ' + prompts[i].content + '</p>';
                     }
                     document.getElementById('response').innerHTML = html;
 

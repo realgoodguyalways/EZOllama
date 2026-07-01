@@ -1,90 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link rel="stylesheet" href="EZOllama.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <style>
-            html, body {
-                height: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            body {
-                display: flex;
-                flex-direction: column;
-                background-color: #4f4f4f;
-            }
-            .input {
-                height: 60px;
-                display: flex;
-            }
-            .chat {
-                position: flex;
-                flex: 1;
-                overflow-y: auto;
-                padding: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="chat" id="chat">
-            <div id="response" style=" max-width: 100%; word-wrap: break-word; word-break: keep-all; margin-left: 0%; display: inline-block; padding-left: 10px; padding-right: 10px; border-radius: 15px;">Answer will appear here</div>
-            <div id="loading" style=" opacity: 0; margin: 30px; margin-left: 10px;">Loading...</div>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <style>
+      html,
+      body {
+        height: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        background-color: #4f4f4f;
+      }
+      .input {
+        position: fixed;
+        height: 60px;
+        display: flex;
+      }
+      .chat {
+        position: flex;
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="sidebar"
+      style="
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 200px;
+        height: 100%;
+        background-color: gainsboro;
+        z-index: 10;
+      "
+    >
+      <h1 style="position: fixed; margin-left: 3px; margin-top: 5px">
+        EZOllama
+      </h1>
+      <!--<select id="model" value="" style="position: fixed; height: 40px; width: 100px; margin-left: 40px; margin-top: 50px;">tinyllama:latest</select>-->
+      <div
+        id="modelSelect"
+        style="
+          position: fixed;
+          height: 40px;
+          width: 160px;
+          margin-left: 20px;
+          margin-top: 50px;
+          text-align: center;
+          z-index: 15;
+        "
+      >
+        <div
+          id="currentModel"
+          style="
+            background: #555;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+          "
+        >
+          Choose A Model
         </div>
-        <div class="input">
-            <input type="text" id="prompt" placeholder="Type something..." 
-            style="flex-grow: 1; width: calc(100% - 80px); height: 40px; border-radius: 15px; margin-left: 10px; position: fixed; bottom: 10px; border-color: black;"/>
-            <button id="submit" style=" position: fixed; bottom: 10px; right: 10px; height: 45px; width: 45px; border-radius: 25px; border-color: black; background-color: #5b5375;">Send</button>
-        </div>
+        <div
+          id="otherModels"
+          style="
+            display: none;
+            background: #555;
+            border-radius: 5px;
+            margin-top: 2px;
+            position: absolute;
+          "
+        ></div>
+      </div>
+      <button
+        id="new"
+        style="
+          position: fixed;
+          bottom: 0px;
+          width: 200px;
+          border: 0px solid black;
+          border-top: 2px solid black;
+          background-color: gainsboro;
+          height: 45px;
+          font-size: 24px;
+        "
+      >
+        + New Chat
+      </button>
+      <button
+        id="closeMenu"
+        style="
+          position: fixed;
+          top: 10px;
+          left: -200px;
+          height: 30px;
+          width: 30px;
+          border-radius: 15px;
+          border: 0px solid black;
+        "
+      >
+        X
+      </button>
+      <p
+        id="chats"
+        style="
+          margin-top: 110px;
+          width: 200px;
+          text-align: center;
+          border-bottom: 2px solid black;
+          max-height: calc(100% - 155px);
+          overflow-y: auto;
+          position: fixed;
+          z-index: 10;
+        "
+      ></p>
+    </div>
+    <div class="chat" id="chat">
+      <button
+        id="openMenu"
+        style="
+          position: fixed;
+          top: 0px;
+          left: 0px;
+          border-bottom-right-radius: 15px;
+          border: 0px solid black;
+          border-bottom: 2px solid black;
+          border-right: 2px solid black;
+          background-color: gainsboro;
+          height: 30px;
+          width: 60px;
+        "
+      >
+        Menu
+      </button>
+      <div
+        id="response"
+        style="
+          max-width: 100%;
+          word-wrap: break-word;
+          word-break: keep-all;
+          margin-left: 0%;
+          display: inline-block;
+          padding-left: 10px;
+          padding-right: 10px;
+          border-radius: 15px;
+          margin-top: 10px;
+        "
+      >
+        Ask a question!
+      </div>
+      <div id="loading" style="opacity: 0; margin: 30px; margin-left: 10px">
+        Loading...
+      </div>
+    </div>
+    <div class="input">
+      <input
+        type="text"
+        id="prompt"
+        placeholder="Type something..."
+        style="
+          flex-grow: 1;
+          width: calc(100% - 80px);
+          height: 40px;
+          border-radius: 15px;
+          margin-left: 10px;
+          position: fixed;
+          bottom: 10px;
+          border-color: black;
+        "
+      />
+      <button
+        id="submit"
+        style="
+          position: fixed;
+          bottom: 10px;
+          right: 10px;
+          height: 45px;
+          width: 45px;
+          border-radius: 25px;
+          border-color: black;
+          background-color: #5b5375;
+        "
+      >
+        Send
+      </button>
+    </div>
 
-        <script>
-            var prompts = [];
+    <script>
+      var conversations = [[]];
+      var loadingStates = [false];
+      var currentChat = 0;
+      var currentModel = "";
 
-            document.getElementById('submit').addEventListener('click', function() {
-                var question = document.getElementById('prompt').value;
-                if (!question) {
-                    return;
-                }
+      //ids
+      var sidebar = document.getElementById("sidebar");
+      var close = document.getElementById("closeMenu");
+      var options = document.getElementById("otherModels");
 
-                document.getElementById('submit').disabled = true;
+      getModels(); // uncomment to push, only for testing purposes
+      renderChatList();
 
-                prompts.push({ role: 'user', content: question });
-                document.getElementById('prompt').value = '';
-                display();
+      document
+        .getElementById("openMenu")
+        .addEventListener("click", function () {
+          if (sidebar.style.left === "-250px") {
+            sidebar.style.left = "0";
+            close.style.left = "160px";
+          } else {
+            sidebar.style.left = "-250px";
+            close.style.left = "-200px";
+          }
+        });
 
-                fetch('http://127.0.0.1:11434/api/chat', {
-                    method: 'POST',
-                    body: JSON.stringify({ 
-                        model: 'tinyllama:latest',
-                        messages: prompts,
-                        stream: false,
-                    }),
-                })
-                .then(function(res) {return res.json(); })
-                .then(function(data) {
-                    prompts.push({ role: 'assistant', content: data.message.content });
-                    display();
-                    document.getElementById('submit').disabled = false;
-                })
-                function display() {
-                    var html = '';
-                    for (var i =0; i < prompts.length; i++) {
-                        var who = prompts[i].role === 'user' ? 'You' : 'AI';
-                        if (who === 'You') {
-                            document.getElementById('response').style.backgroundColor = '#5b5375';
-                            document.getElementById('loading').style.opacity = 1;
-                        } else {
-                            document.getElementById('loading').style.opacity = 0;
-                        }
-                        html += '<p><b>' + who + ':</b> ' + prompts[i].content + '</p>';
-                    }
-                    document.getElementById('response').innerHTML = html;
+      document
+        .getElementById("closeMenu")
+        .addEventListener("click", function () {
+          if (sidebar.style.left === "-250px") {
+            sidebar.style.left = "0";
+            close.style.left = "160px";
+          } else {
+            sidebar.style.left = "-250px";
+            close.style.left = "-200px";
+          }
+        });
 
-                    var chatDiv = document.querySelector('.chat');
-                    chatDiv.scrollTop = chatDiv.scrollHeight;
-                }
-            })
-        </script>
-    </body>
+      document.getElementById("new").addEventListener("click", function () {
+        conversations.push([]);
+        loadingStates.push(false);
+        currentChat = conversations.length - 1;
+        sidebar.style.left = "-250px";
+        close.style.left = "-200px";
+        display();
+      });
+
+      document
+        .getElementById("modelSelect")
+        .addEventListener("click", function () {
+          if ((options.style.display = "none")) {
+            options.style.display = "block";
+          } else {
+            options.style.display = "none";
+          }
+        });
+
+      document.getElementById("submit").addEventListener("click", function () {
+        var question = document.getElementById("prompt").value;
+        if (!question) {
+          return;
+        }
+        if (loadingStates[currentChat]) {
+          return;
+        }
+
+        var thisChat = currentChat;
+        loadingStates[thisChat] = true;
+        updateSubmitState();
+
+        conversations[currentChat].push({ role: "user", content: question });
+        document.getElementById("prompt").value = "";
+        display();
+
+        fetch("http://127.0.0.1:11434/api/chat", {
+          method: "POST",
+          body: JSON.stringify({
+            model: currentModel,
+            messages: conversations[currentChat],
+            stream: false,
+          }),
+        })
+          .then(function (res) {
+            return res.json();
+          })
+          .then(function (data) {
+            conversations[thisChat].push({
+              role: "assistant",
+              content: data.message.content,
+            });
+            loadingStates[thisChat] = false;
+            display();
+            updateSubmitState();
+          });
+      });
+
+      function display() {
+        var html = "";
+        var chat = conversations[currentChat];
+        for (var i = 0; i < chat.length; i++) {
+          if (chat[i].role === "user") {
+            html +=
+              '<p style=" float: right; max-width: 100%; word-wrap: break-word; word-break: keep-all; margin-left: 0%; display: inline-block; padding: 10px; border-radius: 15px; margin-top: 10px; background-color: #5b5375;">' +
+              chat[i].content +
+              "</p>";
+            document.getElementById("loading").style.opacity = 1;
+          } else {
+            html +=
+              '<p float: left; max-width: 100%; word-wrap: break-word; word-break: keep-all; margin-left: 0%; display: inline-block; padding: 10px; border-radius: 15px; margin-top: 10px; background-color: #4f4f4f;">' +
+              chat[i].content +
+              "</p>";
+            document.getElementById("loading").style.opacity = 0;
+          }
+        }
+
+        document.getElementById("response").innerHTML = html;
+        updateSubmitState();
+        var chatDiv = document.querySelector(".chat");
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        renderChatList();
+      }
+
+      function renderChatList() {
+        var html = "";
+        var maxLen = 30;
+
+        for (var i = 0; i < conversations.length; i++) {
+          var label =
+            conversations[i].length > 0
+              ? conversations[i][0].content
+              : "New Chat";
+
+          if (label.length > maxLen) {
+            label = label.substring(0, maxLen) + "...";
+          }
+
+          html +=
+            '<p style="cursor: pointer; color: black;" data-index="' +
+            i +
+            '">' +
+            label +
+            "</p>";
+        }
+        document.getElementById("chats").innerHTML = html;
+
+        var items = document.getElementById("chats").querySelectorAll("p");
+        for (var i = 0; i < items.length; i++) {
+          items[i].addEventListener("click", function () {
+            currentChat = parseInt(this.getAttribute("data-index"));
+            sidebar.style.left = "-250px";
+            close.style.left = "-200px";
+            display();
+          });
+        }
+      }
+
+      function getModels() {
+        fetch("http://127.0.0.1:11434/api/tags")
+          .then(function (res) {
+            return res.json();
+          })
+          .then(function (data) {
+            var Selections = document.getElementById("otherModels");
+            currentModel = data.models[0].name;
+            document.getElementById("currentModel").innerText = currentModel;
+            for (var i = 0; i < data.models.length; i++) {
+              var option = document.createElement("option");
+              option.innerText = data.models[i].name;
+              option.style.padding = "8px";
+              option.style.color = "white";
+              option.setAttribute("data-model", data.models[i].name);
+              option.addEventListener("click", function () {
+                event.stopPropagation();
+                currentModel = this.getAttribute("data-model");
+                document.getElementById("currentModel").innerText =
+                  currentModel;
+                options.style.display = "none";
+              });
+              Selections.appendChild(option);
+            }
+          });
+      }
+
+      function menu() {
+        if (sidebar.style.left === "-250px") {
+          sidebar.style.left = "0";
+        } else {
+          sidebar.style.left = "-250px";
+        }
+      }
+
+      function updateSubmitState() {
+        document.getElementById("submit").disabled = loadingStates[currentChat];
+        document.getElementById("loading").style.opacity = loadingStates[
+          currentChat
+        ]
+          ? 1
+          : 0;
+      }
+    </script>
+  </body>
 </html>

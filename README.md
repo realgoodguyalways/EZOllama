@@ -28,7 +28,12 @@ every time you want to use the app, you need to go into termux and type in
 ```ollama serve``` in one terminal
 <br>
 and ```python -m http.server 8080``` in another
-<br>
+<br> 
+### accessing the app
+1. go to chrome and type in ```127.0.0.1:8080/test.html```
+### adding to homescreen
+1. click on the 3 dots in the top right corner of the site, and scroll until you find add to home screen
+2. once you click that, you can make an app like button that will open this site!
 ### Installing Models
 1. firstly run ```pkg install ollama -y```
 2. manually start ollama by running ```ollama serve```

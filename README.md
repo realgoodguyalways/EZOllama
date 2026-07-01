@@ -7,21 +7,21 @@ A ui intended to make offline ollama AI models ran through Termux on android dev
 2. open Termux:Boot then Termux
 3. type in ```nano test.html``` then paste in the entirety of EZOllama.html into the file
    <br>
-   ### automate hosting the server & starting the model:
 5. click ctr + s then ctr + x to save and exit this file
-6. then type ```mkdir -p ~/.termux/boot``` and ```nano ~/.termux/boot/start-my-services.sh```
-7. in this new file paste:
+### automate hosting the server & starting the model:
+6. type ```mkdir -p ~/.termux/boot``` and ```nano ~/.termux/boot/start-my-services.sh```
+8. in this new file paste:
    ```
    #!/data/data/com.termux/files/usr/bin/sh
 
     termux-wake-lock
 
-   ollama serve
-
+   ollama serve &
+   sleep 5
    python -m http.server 8080 &
    ```
-8. click ctr + s then ctr + x to save and exit this file
-9. finally, type ```chmod 755 ~/.termux/boot/start-my-services.sh```
+9. click ctr + s then ctr + x to save and exit this file
+10. finally, type ```chmod 755 ~/.termux/boot/start-my-services.sh```
 ### not automated:
 every time you want to use the app, you need to go into termux and type in
 <br>

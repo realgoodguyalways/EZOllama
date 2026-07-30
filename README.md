@@ -16,7 +16,8 @@ chmod +x install.sh
 ```
 4. go to chrome and type in ```127.0.0.1:8080/test.html```
 <br>
-(NOTE: If you want to install any models other than tinyllama, you must go to [Installing Models](###Installing-Models))
+(NOTE: If you want to install any models other than tinyllama, you must go to Installing Model)
+
  ## Installation(manual) 
 1. install Termux & Termux:Boot off of F-Droid
 2. open Termux:Boot then Termux

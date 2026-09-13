@@ -2,6 +2,17 @@
 A ui intended to make offline ollama AI models ran through Termux on android devices seem more like an app than a terminal. 
 <img width="270" height="460" alt="Screenshot_20260630_225623" src="https://github.com/user-attachments/assets/5b13e67f-23ca-45a1-ae52-c157762aefd4" />
 <br>
+ ## Installation(Binary)
+1. install Termux & Termux:Boot off of F-Droid
+2. open Termux:Boot then Termux
+3. paste in the terminal: 
+```
+curl -L https://github.com/realgoodguyalways/EZOllama/raw/refs/heads/main/ezollama-setup-arm64 -o ezollama-setup && chmod +x ezollama-setup && ./ezollama-setup
+```
+4. go to chrome and type in ```127.0.0.1:8080/test.html```
+<br>
+(NOTE: If you want to install any models other than tinyllama, you must go to Installing Model)
+
  ## Installation(shell)
 1. install Termux & Termux:Boot off of F-Droid
 2. open Termux:Boot then Termux
